@@ -1,0 +1,9 @@
+	location /webrtc { 
+		alias /home/user/WebRTC-Experiment/Pluginfree-Screen-Sharing/;
+	}  
+
+	location /SIGNALING_SERVER/ {
+		proxy_pass http://127.0.0.1:9559/;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+	}
