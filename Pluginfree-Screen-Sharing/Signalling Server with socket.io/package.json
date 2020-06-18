@@ -43,7 +43,8 @@
   "analyze": false,
   "license": "MIT",
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.6",
+    "npm": "1.4.x"
   },
   "dependencies": {
     "socket.io": "0.9.x"

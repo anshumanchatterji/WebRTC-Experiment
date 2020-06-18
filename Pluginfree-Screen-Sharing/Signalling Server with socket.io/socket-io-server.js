@@ -11,7 +11,7 @@ var options = {
 };
 
 // HTTPs server
-var app = require('https').createServer(options, function(request, response) {
+var app = require('http').createServer(options, function(request, response) {
     response.writeHead(200, {
         'Content-Type': 'text/html'
     });
@@ -97,4 +97,4 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-console.log('Please open SSL URL: https://localhost:'+(process.env.PORT || 9559)+'/');
+console.log('Please open SSL URL: http://localhost:'+(process.env.PORT || 9559)+'/');
