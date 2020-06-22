@@ -126,12 +126,13 @@
                     // via: https://github.com/muaz-khan/WebRTC-Experiment/tree/master/socketio-over-nodejs
                     openSocket: function(config) {
                         // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-			var SIGNALING_SERVER = window.location.origin +'/';
-			console.log("SIGNALING_SERVER: " + SIGNALING_SERVER);
+                        var SIGNALING_SERVER = window.location.origin +'/';
+                        console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
                         io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
+                            alert('Emit new Channel' + config.channel);
                             channel: config.channel,
                             sender: sender
                         });
@@ -139,6 +140,7 @@
                         var socket = io.connect(SIGNALING_SERVER + config.channel, {resource: 'SIGNALING_SERVER/socket.io'});
                         socket.channel = config.channel;
                         socket.on('connect', function () {
+                            alert('On Connect' + config.callback);
                             if (config.callback) config.callback(socket);
                         });
 
