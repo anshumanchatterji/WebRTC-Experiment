@@ -129,6 +129,7 @@
                         var SIGNALING_SERVER = window.location.origin +'/';
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
+                        alert('Channel' + config.channel);
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
                         io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
@@ -151,7 +152,6 @@
 
                         socket.on('message', config.onmessage);
 
-                        alert('isbroadcaster: ' + isbroadcaster);
                     },
                     onRemoteStream: function(media) {
                         if(isbroadcaster) return;
