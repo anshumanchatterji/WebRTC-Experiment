@@ -23,12 +23,13 @@
                 return result;
             }
 
-            if(!location.hash.replace('#', '').length) {
-                if(findGetParameter('mode')== 'broadcaster'){
-                    alert('Is broadcaster');
+            if(findGetParameter('mode')== 'broadcaster'){
+                window.onload = function(){
+                    document.getElementById('share-screen').click();
                 }
-                // location.reload();
+                    
             }
+            
         </script>
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -143,8 +144,6 @@
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || findGetParameter('roomToken');
 
-                        alert('Channel' + config.channel);
-                       
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
                         io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
