@@ -27,7 +27,7 @@
                 if(findGetParameter('mode')== 'broadcaster'){
                     alert('Is broadcaster');
                 }
-                location.reload();
+                // location.reload();
             }
         </script>
 
@@ -143,11 +143,11 @@
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
 
-                        debugger;
-                        config.channel = findGetParameter('roomToken')
-                        
-
                         alert('Channel' + config.channel);
+                        debugger;
+                        //config.channel = findGetParameter('roomToken');
+                        alert('Channel ' + findGetParameter('roomToken'));
+
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
                         io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
