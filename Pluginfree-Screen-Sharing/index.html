@@ -132,7 +132,6 @@
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
                         io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
-                            alert('Emit new Channel');
                             channel: config.channel,
                             sender: sender
                         });
@@ -140,7 +139,7 @@
                         var socket = io.connect(SIGNALING_SERVER + config.channel, {resource: 'SIGNALING_SERVER/socket.io'});
                         socket.channel = config.channel;
                         socket.on('connect', function () {
-                            alert('On Connect');
+                            alert('On Connect' + config.callback);
                             if (config.callback) config.callback(socket);
                         });
 
