@@ -139,7 +139,6 @@
                         var socket = io.connect(SIGNALING_SERVER + config.channel, {resource: 'SIGNALING_SERVER/socket.io'});
                         socket.channel = config.channel;
                         socket.on('connect', function () {
-                            alert('On Connect' + config.callback);
                             if (config.callback) config.callback(socket);
                         });
 
@@ -151,6 +150,8 @@
                         };
 
                         socket.on('message', config.onmessage);
+
+                        alert('isbroadcaster: ' + isbroadcaster);
                     },
                     onRemoteStream: function(media) {
                         if(isbroadcaster) return;
