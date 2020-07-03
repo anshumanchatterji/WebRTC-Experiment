@@ -526,29 +526,58 @@
                                 webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id}));
 
                                 var mainVideoElementID = document.getElementById('mainVideoElementClient');
-                                mainVideoElementID.addEventListener('mousemove', event => {
-                                    console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                mainVideoElementID.addEventListener('mousemove', (event) => {
+                                    //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                     webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                 });
 
-                                mainVideoElementID.addEventListener('mouseup', (e) => {
-                                    switch (e.button) {
+                                mainVideoElementID.addEventListener('mouseup', (event) => {
+                                    switch (event.button) {
                                         case 0:
-                                            console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             break;
                                         case 1:
-                                            console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             break;
                                         case 2:
-                                            console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                             break;
                                         default:
                                             break;
                                     }
                                 });
+
+                                document.addEventListener("keydown", function(event) {
+                                  console.log(event);
+                                  var sendModifier = [];
+                                  if(event.altKey){
+                                    sendModifier.push("alt");
+                                  }
+
+                                  if(event.ctrlKey){
+                                    sendModifier.push("ctrl");
+                                  }
+
+                                  if(event.shiftKey){
+                                    sendModifier.push("shift");
+                                  }
+
+                                  if(event.metaKey){
+                                    sendModifier.push("meta");
+                                  }
+                                  
+                                  console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "down" , "modifier" : sendModifier}));
+                                  webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "down" , "modifier" : sendModifier}));
+                                });
+
+                                /*document.addEventListener("keyup", function(event) {
+                                  console.log(event);
+                                  console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
+                                  webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
+                                });*/
                             }
 
                             webSocket.onmessage = function (evt) { 
