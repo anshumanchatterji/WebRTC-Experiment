@@ -569,8 +569,10 @@
                                     sendModifier.push("meta");
                                   }
                                   
-                                  console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "down" , "modifier" : sendModifier}));
-                                  webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "down" , "modifier" : sendModifier}));
+                                  var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key.toLowerCase(), "keyState": "down" , "modifier" : sendModifier});
+                                  
+                                  console.log(msg);
+                                  webSocket.send(msg);
                                 });
 
                                 /*document.addEventListener("keyup", function(event) {
