@@ -11,6 +11,10 @@
         <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
 
         <style>
+            html{
+                background-color: #666 !important;
+            }
+
             video {
                 -moz-transition: all 1s ease;
                 -ms-transition: all 1s ease;
@@ -19,7 +23,8 @@
                 -webkit-transition: all 1s ease;
                 transition: all 1s ease;
                 vertical-align: top;
-                width:100%;
+                height:100%;
+                object-fit: cover;
                 /*min-height: 100%;
                 min-width: 100%;*/
                 /*left: 50%;
@@ -97,7 +102,7 @@
     <body style="overflow: hidden;">
         <main>
             <!-- local/remote videos container -->
-            <div id="mainVideoContainer" style="width:1024px;height:590px;"></div>
+            <div id="mainVideoContainer" style="width:100%;height:100%;display: flex; align-items: center; justify-content: center;"></div>
 
             <!-- <section id="uniqueIdentifierToken" style="display: none; text-align: center; padding: 20px;"></section> -->
             <!-- <button id="shareScreen" class="setup"></button> -->
@@ -175,6 +180,11 @@
                                 else{
                                     var url = new URL(window.location.href);
                                 }
+                                var mainVideoElementID = document.getElementById('mainVideoElementClient');
+
+                                console.log("mainVideoElementIDWidth2222222222222222222" + mainVideoElementID.clientWidth);
+                                console.log("mainVideoElementIDHeight222222222222222222" + mainVideoElementID.clientHeight);
+
                                 var target = url.protocol+"//"+url.host;
                                 var videoContainer = document.getElementById('mainVideoContainer');
                                 var videoContainerWidth = videoContainer.clientWidth;
@@ -496,8 +506,6 @@
                 var clientViewportHeight = videoContainer.clientHeight;
 
                 var webSocketClientCounter = 0;
-                /*var videoContainerWidth = videoContainer.clientWidth;
-                var videoContainerHeight = videoContainer.clientHeight;*/
 
                 bindEvent(window, 'message', function (e) {
                     console.log(e.data);
@@ -509,94 +517,126 @@
                         videoContainer.style.width = clientViewportWidth + "px";
                         videoContainer.style.height = clientViewportHeight + "px";
 
+
                         console.log('RecievedvideoContainerWidth : ' + clientViewportWidth);
                         console.log('RecievedvideoContainerHeight : ' + clientViewportHeight);
                         console.log('videoContainerWidth : ' + videoContainer.offsetWidth);
                         console.log('videoContainerHeight : ' + videoContainer.offsetHeight);
 
-                        if ("WebSocket" in window) {
-                            /*if(webSocketClientCounter >= 1){
-                                webSocket.close();
-                            }*/
+                        var mainVideoElementID = document.getElementById('mainVideoElementClient');
 
-                            var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
+                        console.log("mainVideoElementIDWidth1111" + mainVideoElementID.clientWidth);
+                        console.log("mainVideoElementIDHeight111" + mainVideoElementID.clientHeight);
+                        mainVideoElementID.addEventListener( "loadedmetadata", function (e) {
+                            console.log("mainVideoElementIDWidth33333333333333333333333" + mainVideoElementID.clientWidth);
+                            console.log("mainVideoElementIDHeight3333333333333333333333" + mainVideoElementID.clientHeight);
+                            clientViewportWidth = this.clientWidth,
+                                clientViewportHeight = this.clientHeight;
 
-                            webSocket.onopen = function() {
-                                webSocketClientCounter++;
-                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id}));
+                            if ("WebSocket" in window) {
+                                /*if(webSocketClientCounter >= 1){
+                                    webSocket.close();
+                                }*/
 
-                                var mainVideoElementID = document.getElementById('mainVideoElementClient');
-                                mainVideoElementID.addEventListener('mousemove', (event) => {
-                                    //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                    webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                });
+                                var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
 
-                                mainVideoElementID.addEventListener('mouseup', (event) => {
-                                    switch (event.button) {
-                                        case 0:
-                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            break;
-                                        case 1:
-                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            break;
-                                        case 2:
-                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                            break;
-                                        default:
-                                            break;
+                                webSocket.onopen = function() {
+                                    webSocketClientCounter++;
+                                    webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id}));
+
+                                    videoContainerWidth = videoContainer.clientWidth;
+
+                                    mainVideoElementWidth = clientViewportWidth;
+                                    mainVideoElementLeft = (videoContainerWidth - mainVideoElementWidth) /2;
+
+                                    mainVideoElementID.addEventListener('mousemove', (event) => {
+                                        //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                        
+                                        //mainVideoElementID.style.cursor = 'none';
+
+                                        webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                    });
+
+                                    mainVideoElementID.addEventListener('contextmenu', function(event) {
+                                        event.preventDefault();
+                                        return false;
+                                    }, false);
+
+                                    mainVideoElementID.addEventListener("wheel", onWheelScrollEventFunction);
+
+                                    function onWheelScrollEventFunction(event) {
+                                      console.log('**** Mouse scroll event cartured' + JSON.stringify(event));
+                                      webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "scrollMouse", "scrollX": -(event.deltaX), "scrollY": -(event.deltaY) , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                     }
-                                });
 
-                                document.addEventListener("keydown", function(event) {
-                                  console.log(event);
-                                  var sendModifier = [];
-                                  if(event.altKey){
-                                    sendModifier.push("alt");
-                                  }
+                                    mainVideoElementID.addEventListener('mouseup', (event) => {
+                                        switch (event.button) {
+                                            case 0:
+                                                //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                break;
+                                            case 1:
+                                                //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                break;
+                                            case 2:
+                                                //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    });
 
-                                  if(event.ctrlKey){
-                                    sendModifier.push("ctrl");
-                                  }
+                                    document.addEventListener("keydown", function(event) {
+                                      console.log(event);
+                                      var sendModifier = [];
+                                      if(event.altKey){
+                                        sendModifier.push("alt");
+                                      }
 
-                                  if(event.shiftKey){
-                                    sendModifier.push("shift");
-                                  }
+                                      if(event.ctrlKey){
+                                        sendModifier.push("ctrl");
+                                      }
 
-                                  if(event.metaKey){
-                                    sendModifier.push("meta");
-                                  }
-                                  
-                                  var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key.toLowerCase(), "keyState": "down" , "modifier" : sendModifier});
-                                  
-                                  console.log(msg);
-                                  webSocket.send(msg);
-                                });
+                                      if(event.shiftKey){
+                                        sendModifier.push("shift");
+                                      }
 
-                                /*document.addEventListener("keyup", function(event) {
-                                  console.log(event);
-                                  console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
-                                  webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
-                                });*/
+                                      if(event.metaKey){
+                                        sendModifier.push("meta");
+                                      }
+                                      
+                                      var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key.toLowerCase(), "keyState": "down" , "modifier" : sendModifier});
+                                      
+                                      console.log(msg);
+                                      webSocket.send(msg);
+                                    });
+
+                                    /*document.addEventListener("keyup", function(event) {
+                                      console.log(event);
+                                      console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
+                                      webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
+                                    });*/
+                                }
+
+                                webSocket.onmessage = function (evt) { 
+                                    var received_msg = evt.data;
+                                    console.log("Message is received...");
+                                };
+                            
+                                webSocket.onclose = function() { 
+                                 
+                                    // websocket is closed.
+                                    console.log("Connection is closed..."); 
+                                };
+                            } else {
+                             
+                                // The browser doesn't support WebSocket
+                                console.log("WebSocket NOT supported by your Browser!");
                             }
 
-                            webSocket.onmessage = function (evt) { 
-                                var received_msg = evt.data;
-                                console.log("Message is received...");
-                            };
-                        
-                            webSocket.onclose = function() { 
-                             
-                                // websocket is closed.
-                                console.log("Connection is closed..."); 
-                            };
-                        } else {
-                         
-                            // The browser doesn't support WebSocket
-                            console.log("WebSocket NOT supported by your Browser!");
-                        }
+                        }, false );
                     }
                 });
 
