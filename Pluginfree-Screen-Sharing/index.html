@@ -10,6 +10,7 @@
 
         <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
 
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/fontawesome.min.js"></script>
         <style>
             html{
                 background-color: #666 !important;
@@ -103,6 +104,10 @@
         <main>
             <!-- local/remote videos container -->
             <div id="mainVideoContainer" style="width:100%;height:100%;display: flex; align-items: center; justify-content: center;"></div>
+            
+            <div style="position:absolute; top: 80px; right:0px; width: 5em;height:100%;">
+                <li style="width:100%;" class="" id="captureScreenshotCoverShot" ><a href="javascript:void(0);"><i class="material-icons">photo_camera</i><span>Screenshot</span></a></li>    
+            </div>
 
             <!-- <section id="uniqueIdentifierToken" style="display: none; text-align: center; padding: 20px;"></section> -->
             <!-- <button id="shareScreen" class="setup"></button> -->
@@ -549,18 +554,32 @@
                                     mainVideoElementWidth = clientViewportWidth;
                                     mainVideoElementLeft = (videoContainerWidth - mainVideoElementWidth) /2;
 
+                                    //let drag = false;
+
+                                    //document.addEventListener('mousedown', () => drag = false);
+
                                     mainVideoElementID.addEventListener('mousemove', (event) => {
-                                        //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                        
                                         //mainVideoElementID.style.cursor = 'none';
 
-                                        webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                        //if(event.buttons != 0){
+                                            //drag = true;
+                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                            //webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseDragMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+
+                                        //}
+                                        //else{
+                                            webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight, "buttons": event.buttons}));
+                                        //}
                                     });
 
                                     mainVideoElementID.addEventListener('contextmenu', function(event) {
                                         event.preventDefault();
                                         return false;
                                     }, false);
+
+                                    mainVideoElementID.addEventListener("dblclick", function(event){
+                                        webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseDoubleClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                    });
 
                                     mainVideoElementID.addEventListener("wheel", onWheelScrollEventFunction);
 
@@ -569,10 +588,6 @@
                                       webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "scrollMouse", "scrollX": -(event.deltaX), "scrollY": -(event.deltaY) , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                     }
 
-                                    let drag = false;
-
-                                    document.addEventListener('mousedown', () => drag = false);
-                                    document.addEventListener('mousemove', () => drag = true);
                                     //document.addEventListener('mouseup', () => console.log(drag ? 'drag' : 'click'));
                                     /*mainVideoElementID.addEventListener('mousedown', (event) => {
                                         
@@ -581,7 +596,7 @@
                                     mainVideoElementID.addEventListener('mouseup', (event) => {
                                         switch (event.button) {
                                             case 0:
-                                                //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                                 webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                                 break;
                                             case 1:
@@ -637,6 +652,11 @@
                                       console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
                                       webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key, "keyState": "up" , "modifier" : []}));
                                     });*/
+
+                                    var captureScreenShotButton = document.getElementById('captureScreenshotCoverShot');
+                                    captureScreenShotButton.addEventListener("click", function(event){
+                                        webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "captureScreenshot", "sourceX": 0, "sourceY": 0 , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                    });
                                 }
 
                                 webSocket.onmessage = function (evt) { 
