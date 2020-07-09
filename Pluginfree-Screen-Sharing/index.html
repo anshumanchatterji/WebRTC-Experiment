@@ -569,6 +569,15 @@
                                       webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "scrollMouse", "scrollX": -(event.deltaX), "scrollY": -(event.deltaY) , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
                                     }
 
+                                    let drag = false;
+
+                                    document.addEventListener('mousedown', () => drag = false);
+                                    document.addEventListener('mousemove', () => drag = true);
+                                    //document.addEventListener('mouseup', () => console.log(drag ? 'drag' : 'click'));
+                                    /*mainVideoElementID.addEventListener('mousedown', (event) => {
+                                        
+                                    });*/
+
                                     mainVideoElementID.addEventListener('mouseup', (event) => {
                                         switch (event.button) {
                                             case 0:
@@ -590,13 +599,21 @@
 
                                     document.addEventListener("keydown", function(event) {
                                       console.log(event);
+                                      /*if(event.keyCode == 91){
+                                         // event.preventDefault(); //Won't work
+                                         console.log("Win Key was clicked");
+                                         event.preventDefault();
+                                         event.stopPropagation();
+                                         return false;
+                                      }*/
+
                                       var sendModifier = [];
                                       if(event.altKey){
                                         sendModifier.push("alt");
                                       }
 
                                       if(event.ctrlKey){
-                                        sendModifier.push("ctrl");
+                                        sendModifier.push("command");
                                       }
 
                                       if(event.shiftKey){
@@ -606,8 +623,10 @@
                                       if(event.metaKey){
                                         sendModifier.push("meta");
                                       }
+
+                                      var eventKey = event.key.toLowerCase();
                                       
-                                      var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": event.key.toLowerCase(), "keyState": "down" , "modifier" : sendModifier});
+                                      var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": eventKey, "keyState": "down" , "modifier" : sendModifier});
                                       
                                       console.log(msg);
                                       webSocket.send(msg);
