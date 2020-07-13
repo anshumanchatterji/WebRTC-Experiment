@@ -10,7 +10,7 @@
 
         <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
 
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/fontawesome.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
             html{
                 background-color: #666 !important;
@@ -105,8 +105,8 @@
             <!-- local/remote videos container -->
             <div id="mainVideoContainer" style="width:100%;height:100%;display: flex; align-items: center; justify-content: center;"></div>
             
-            <div style="position:absolute; top: 80px; right:0px; width: 5em;height:100%;">
-                <li style="width:100%;" class="" id="captureScreenshotCoverShot" ><a href="javascript:void(0);"><i class="material-icons">photo_camera</i><span>Screenshot</span></a></li>    
+            <div style="position: absolute; top: 0px; right: 0px; width: 4em; height: 100%; list-style-type: none; background: #f9f9f9;">
+                <li style="width: 100%; border: 0px; border-top: 1px solid #d1d1d1; border-bottom: 1px solid #d1d1d1; padding: 0px;" class="" id="captureScreenshotCoverShot" ><a href="javascript:void(0);" style="color: #454545; align-items: center; display: flex; flex-direction: column; margin-top: 10px;"><i class="material-icons" style="font-size: 1.5rem;">photo_camera</i><span style="font-size: 0.6rem;text-transform: uppercase;">Screenshot</span></a></li>    
             </div>
 
             <!-- <section id="uniqueIdentifierToken" style="display: none; text-align: center; padding: 20px;"></section> -->
@@ -555,19 +555,19 @@
                                     mainVideoElementWidth = clientViewportWidth;
                                     mainVideoElementLeft = (videoContainerWidth - mainVideoElementWidth) /2;
 
-                                    //let drag = false;
+                                    let drag = false;
 
-                                    //document.addEventListener('mousedown', () => drag = false);
+                                    document.addEventListener('mousedown', () => drag = false);
 
                                     mainVideoElementID.addEventListener('mousemove', (event) => {
                                         //mainVideoElementID.style.cursor = 'none';
 
-                                        //if(event.buttons != 0){
-                                            //drag = true;
-                                            //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                        if(event.buttons != 0){
+                                            drag = true;
+                                            console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight,"buttons": event.buttons}));
                                             //webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseDragMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
 
-                                        //}
+                                        }
                                         //else{
                                             webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight, "buttons": event.buttons}));
                                         //}
@@ -595,6 +595,10 @@
                                     });*/
 
                                     mainVideoElementID.addEventListener('mouseup', (event) => {
+                                        if(drag){
+                                            drag = false;
+                                            return false;
+                                        }
                                         switch (event.button) {
                                             case 0:
                                                 console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
@@ -677,6 +681,9 @@
                             }
 
                         }, false );
+                    }
+                    else{
+                        console.log(JSON.stringify(e));
                     }
                 });
 
