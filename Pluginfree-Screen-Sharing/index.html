@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-        <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
+        <link rel="stylesheet" href="./style.css">
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <style>
@@ -116,8 +116,8 @@
                 var config = {
                     openSocket: function(config) {
                         // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-                        // var SIGNALING_SERVER = window.location.origin +'/';
-                        var SIGNALING_SERVER = 'https://browsercloud-us.pcloudy.com/';
+                        var SIGNALING_SERVER = window.location.origin +'/';
+                        //var SIGNALING_SERVER = 'https://dev1-browsercloud-in.pcloudy.com/';
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || findGetParameter('roomToken');
 
@@ -544,7 +544,8 @@
                                     webSocket.close();
                                 }*/
 
-                                var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
+                                // var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
+                                var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
 
                                 webSocket.onopen = function() {
                                     webSocketClientCounter++;

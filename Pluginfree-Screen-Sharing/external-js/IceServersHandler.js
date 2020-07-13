@@ -13,7 +13,15 @@ var IceServersHandler = (function() {
             ]
         }];
 
-        return iceServers;
+        var iceServers2 = [{
+            urls: ['stun:3.7.84.148:3478'],
+        }, {
+            urls: ['turn:3.7.84.148:3478'],
+            username: "secureuser", // optional
+            credential: "Password@1" // optional
+        }];
+
+        return iceServers2;
     }
 
     return {
