@@ -495,7 +495,7 @@ function RTCPeerConnectionHandler(options) {
 
     peer.isConnected = false;
     peer.oniceconnectionstatechange = peer.onsignalingstatechange = function() {
-        if(peer && peer.isConnected && peer.iceConnectionState == 'failed') return;
+        if (peer && peer.isConnected && peer.iceConnectionState == 'failed') return;
         options.oniceconnectionstatechange(peer);
     };
 
@@ -530,7 +530,19 @@ var isEdge = navigator.userAgent.indexOf('Edge') !== -1 && (!!navigator.msSaveOr
 
 // getUserMedia
 var video_constraints = {
-    mandatory: {},
+    mandatory: {
+        // chromeMediaSource: 'screen',
+        minWidth: 1280,
+        minHeight: 720,
+
+        maxWidth: 1920,
+        maxHeight: 1080,
+
+        // minFrameRate: 3,
+        // maxFrameRate: 32,
+
+        minAspectRatio: 1.77
+    },
     optional: []
 };
 
