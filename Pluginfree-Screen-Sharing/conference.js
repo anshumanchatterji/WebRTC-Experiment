@@ -538,8 +538,8 @@ var video_constraints = {
         maxWidth: 1920,
         maxHeight: 1080,
 
-        // minFrameRate: 3,
-        // maxFrameRate: 32,
+         minFrameRate: 3,
+         maxFrameRate: 32,
 
         minAspectRatio: 1.77
     },

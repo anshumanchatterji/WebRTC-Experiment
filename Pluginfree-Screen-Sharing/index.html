@@ -111,8 +111,8 @@
                 var config = {
                     openSocket: function(config) {
                         // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-                        //var SIGNALING_SERVER = window.location.origin +'/';
-                        var SIGNALING_SERVER = 'https://dev1-browsercloud-in.pcloudy.com/';
+                        var SIGNALING_SERVER = window.location.origin +'/';
+                        //var SIGNALING_SERVER = 'https://dev1-browsercloud-in.pcloudy.com/';
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || findGetParameter('roomToken');
 
