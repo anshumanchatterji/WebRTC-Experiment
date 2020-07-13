@@ -539,7 +539,8 @@
                                     webSocket.close();
                                 }*/
 
-                                var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
+                                // var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
+                                var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
 
                                 webSocket.onopen = function() {
                                     webSocketClientCounter++;
