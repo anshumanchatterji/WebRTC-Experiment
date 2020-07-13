@@ -21,7 +21,7 @@ var IceServersHandler = (function() {
             credential: "Password@1" // optional
         }];
 
-        return iceServers;
+        return iceServers2;
     }
 
     return {
