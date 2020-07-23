@@ -116,25 +116,29 @@
                 var config = {
                     openSocket: function(config) {
                         // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-                        var SIGNALING_SERVER = window.location.origin +'/';
+                        var SIGNALING_SERVER = window.location.origin + '/';
                         //var SIGNALING_SERVER = 'https://dev1-browsercloud-in.pcloudy.com/';
                         console.log("SIGNALING_SERVER: " + SIGNALING_SERVER + 'SIGNALING_SERVER/socket.io');
                         config.channel = config.channel || findGetParameter('roomToken');
 
                         var sender = Math.round(Math.random() * 999999999) + 999999999;
 
-                        io.connect(SIGNALING_SERVER, {resource: 'SIGNALING_SERVER/socket.io'}).emit('new-channel', {
+                        io.connect(SIGNALING_SERVER, {
+                            resource: 'SIGNALING_SERVER/socket.io'
+                        }).emit('new-channel', {
                             channel: config.channel,
                             sender: sender
                         });
 
-                        var socket = io.connect(SIGNALING_SERVER + config.channel, {resource: 'SIGNALING_SERVER/socket.io'});
+                        var socket = io.connect(SIGNALING_SERVER + config.channel, {
+                            resource: 'SIGNALING_SERVER/socket.io'
+                        });
                         socket.channel = config.channel;
-                        socket.on('connect', function () {
+                        socket.on('connect', function() {
                             if (config.callback) config.callback(socket);
                         });
 
-                        socket.send = function (message) {
+                        socket.send = function(message) {
                             socket.emit('message', {
                                 sender: sender,
                                 data: message
@@ -145,7 +149,7 @@
 
                     },
                     onRemoteStream: function(media) {
-                        if(isbroadcaster) return;
+                        if (isbroadcaster) return;
                         console.log('************ on remote stream ****************');
                         var video = media.video;
                         videosContainer.insertBefore(video, videosContainer.firstChild);
@@ -158,32 +162,32 @@
                             //video.setAttribute('autoplay', "autoplay");
                             //video.setAttribute('playsinline', true);
 
-                            if (video.hasAttribute("controls")){
-                                video.removeAttribute("controls");   
+                            if (video.hasAttribute("controls")) {
+                                video.removeAttribute("controls");
                             }
                             console.log('inside capture user media ---- check support');
                             console.log('trying to add auto play');
 
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
-                                
-                                var target = url.protocol+"//"+url.host;
-                                window.parent.postMessage({"action":"connection_status", "message":'connected'}, target);
-                            }
-                            catch(e){
+
+                                var target = url.protocol + "//" + url.host;
+                                window.parent.postMessage({
+                                    "action": "connection_status",
+                                    "message": 'connected'
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
 
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
                                 var mainVideoElementID = document.getElementById('mainVideoElementClient');
@@ -191,13 +195,18 @@
                                 console.log("mainVideoElementIDWidth2222222222222222222" + mainVideoElementID.clientWidth);
                                 console.log("mainVideoElementIDHeight222222222222222222" + mainVideoElementID.clientHeight);
 
-                                var target = url.protocol+"//"+url.host;
+                                var target = url.protocol + "//" + url.host;
                                 var videoContainer = document.getElementById('mainVideoContainer');
                                 var videoContainerWidth = videoContainer.clientWidth;
                                 var videoContainerHeight = videoContainer.clientHeight;
-                                window.parent.postMessage({"action":"video_container_stat", "message": {"width": videoContainerWidth,"height": videoContainerHeight}}, target);
-                            }
-                            catch(e){
+                                window.parent.postMessage({
+                                    "action": "video_container_stat",
+                                    "message": {
+                                        "width": videoContainerWidth,
+                                        "height": videoContainerHeight
+                                    }
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
                         }
@@ -206,7 +215,7 @@
                         //document.querySelector('.hide-after-join').style.display = 'none';
                     },
                     onRoomFound: function(room) {
-                        if(isbroadcaster) return;
+                        if (isbroadcaster) return;
 
                         console.log('************ on room found conference ui ****************: ROOM:' + JSON.stringify(room));
                         conferenceUI.joinRoom({
@@ -218,11 +227,10 @@
                     },
                     onNewParticipant: function(numberOfParticipants) {
                         var text = numberOfParticipants + ' users are viewing your screen!';
-                        
-                        if(numberOfParticipants <= 0) {
+
+                        if (numberOfParticipants <= 0) {
                             text = 'No one is viewing your screen YET.';
-                        }
-                        else if(numberOfParticipants == 1) {
+                        } else if (numberOfParticipants == 1) {
                             text = 'Only one user is viewing your screen!';
                         }
 
@@ -232,78 +240,82 @@
                     oniceconnectionstatechange: function(state) {
                         var text = '';
 
-                        if(state == 'closed' || state == 'disconnected') {
+                        if (state == 'closed' || state == 'disconnected') {
                             text = 'One of the participants just left.';
                             document.title = text;
                             showErrorMessage(document.title);
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
-                                var target = url.protocol+"//"+url.host;
-                                window.parent.postMessage({"action":"connection_status", "message":state}, target);
-                            }
-                            catch(e){
+                                var target = url.protocol + "//" + url.host;
+                                window.parent.postMessage({
+                                    "action": "connection_status",
+                                    "message": state
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
                         }
 
-                        if(state == 'failed') {
+                        if (state == 'failed') {
                             text = 'Failed to bypass Firewall rules. It seems that target user did not receive your screen. Please ask him reload the page and try again.';
                             document.title = text;
                             showErrorMessage(document.title);
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
-                                var target = url.protocol+"//"+url.host;
-                                window.parent.postMessage({"action":"connection_status", "message":state}, target);
-                            }
-                            catch(e){
+                                var target = url.protocol + "//" + url.host;
+                                window.parent.postMessage({
+                                    "action": "connection_status",
+                                    "message": state
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
                         }
 
-                        if(state == 'connected' || state == 'completed') {
+                        if (state == 'connected' || state == 'completed') {
                             text = 'A user successfully received your screen.';
                             document.title = text;
                             showErrorMessage(document.title, 'green');
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
-                                var target = url.protocol+"//"+url.host;
-                                window.parent.postMessage({"action":"connection_status", "message":'connected'}, target);
-                            }
-                            catch(e){
+                                var target = url.protocol + "//" + url.host;
+                                window.parent.postMessage({
+                                    "action": "connection_status",
+                                    "message": 'connected'
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
                         }
 
-                        if(state == 'new' || state == 'checking') {
+                        if (state == 'new' || state == 'checking') {
                             text = 'Someone is trying to join you.';
                             document.title = text;
                             showErrorMessage(document.title, 'green');
-                            try{
-                                if(document.referrer !== "" && document.referrer !== undefined){
-                                    var url = new URL( document.referrer );
-                                }
-                                else{
+                            try {
+                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                    var url = new URL(document.referrer);
+                                } else {
                                     var url = new URL(window.location.href);
                                 }
-                                var target = url.protocol+"//"+url.host;
-                                window.parent.postMessage({"action":"connection_status", "message":state}, target);
-                            }
-                            catch(e){
+                                var target = url.protocol + "//" + url.host;
+                                window.parent.postMessage({
+                                    "action": "connection_status",
+                                    "message": state
+                                }, target);
+                            } catch (e) {
                                 console.log(e);
                             }
                         }
@@ -312,16 +324,16 @@
 
                 /* UI specific */
                 var conferenceUI = conference(config);
-                
-                if(findGetParameter('mode')== 'broadcaster'){
+
+                if (findGetParameter('mode') == 'broadcaster') {
                     console.log('inside broadcaster');
-                    window.onload = function(){
+                    window.onload = function() {
                         //document.getElementById('shareScreen').click();
                         /* on page load: get public rooms */
                         console.log('inside broadcaster ---- on load');
 
                         console.log('inside broadcaster: videosContainer' + videosContainer);
-                        var roomName = document.getElementById('room-name') || { };
+                        var roomName = document.getElementById('room-name') || {};
                         console.log('inside broadcaster: roomName' + roomName);
                         roomName.disabled = true;
                         captureUserMedia(function() {
@@ -333,18 +345,19 @@
                         this.disabled = true;
 
                         console.log('inside broadcaster: ---- going to enter post message');
-                        try{
+                        try {
                             console.log('inside broadcaster: ---- inside try');
-                            if(document.referrer !== "" && document.referrer !== undefined){
-                                var url = new URL( document.referrer );
-                            }
-                            else{
+                            if (document.referrer !== "" && document.referrer !== undefined) {
+                                var url = new URL(document.referrer);
+                            } else {
                                 var url = new URL(window.location.href);
                             }
-                            var target = url.protocol+"//"+url.host;
-                            window.parent.postMessage({"action":"connection_status", "message":'connected'}, target);
-                        }
-                        catch(e){
+                            var target = url.protocol + "//" + url.host;
+                            window.parent.postMessage({
+                                "action": "connection_status",
+                                "message": 'connected'
+                            }, target);
+                        } catch (e) {
                             console.log(e);
                         }
                     }
@@ -397,8 +410,9 @@
                         //video.setAttribute('controls', true);
                     }
 
-                    if(navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
+                    if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
                         console.log('inside capture user media ---- inside if of navigator media type');
+
                         function onGettingSteam(stream) {
                             console.log('inside capture user media ---- inside if of navigator media type ***** on getting stream');
                             video.srcObject = stream;
@@ -428,20 +442,22 @@
                             //document.querySelector('.hide-after-join').style.display = 'none';
                         }
 
-                        if(navigator.mediaDevices.getDisplayMedia) {
+                        if (navigator.mediaDevices.getDisplayMedia) {
                             console.log('inside capture user media ---- inside if of navigator media type ***** if of navigator.mediaDevices.getDisplayMedia');
-                            navigator.mediaDevices.getDisplayMedia({video: true}).then(stream => {
+                            navigator.mediaDevices.getDisplayMedia({
+                                video: true
+                            }).then(stream => {
                                 onGettingSteam(stream);
                             }, getDisplayMediaError).catch(getDisplayMediaError);
-                        }
-                        else if(navigator.getDisplayMedia) {
+                        } else if (navigator.getDisplayMedia) {
                             console.log('inside capture user media ---- inside if of navigator media type ***** else if of navigator.getDisplayMedia');
-                            navigator.getDisplayMedia({video: true}).then(stream => {
+                            navigator.getDisplayMedia({
+                                video: true
+                            }).then(stream => {
                                 onGettingSteam(stream);
                             }, getDisplayMediaError).catch(getDisplayMediaError);
                         }
-                    }
-                    else {
+                    } else {
 
                         console.log('inside capture user media ---- inside else of navigator media type');
                         if (DetectRTC.browser.name === 'Chrome') {
@@ -513,13 +529,13 @@
 
                 var webSocketClientCounter = 0;
 
-                bindEvent(window, 'message', function (e) {
+                bindEvent(window, 'message', function(e) {
                     console.log(e.data);
-                    if(e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "set_client_viewport"){
+                    if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "set_client_viewport") {
                         var instance_id = e.data.message.instance_id;
                         clientViewportWidth = e.data.message.viewportWidth;
                         clientViewportHeight = e.data.message.viewportHeight;
-                        
+
                         var relay_server_url = e.data.message.main_relay_server_url;
 
                         videoContainer.style.width = clientViewportWidth + "px";
@@ -535,7 +551,7 @@
 
                         console.log("mainVideoElementIDWidth1111" + mainVideoElementID.clientWidth);
                         console.log("mainVideoElementIDHeight111" + mainVideoElementID.clientHeight);
-                        mainVideoElementID.addEventListener( "loadedmetadata", function (e) {
+                        mainVideoElementID.addEventListener("loadedmetadata", function(e) {
                             console.log("mainVideoElementIDWidth33333333333333333333333" + mainVideoElementID.clientWidth);
                             console.log("mainVideoElementIDHeight3333333333333333333333" + mainVideoElementID.clientHeight);
                             clientViewportWidth = this.clientWidth,
@@ -552,12 +568,15 @@
 
                                 webSocket.onopen = function() {
                                     webSocketClientCounter++;
-                                    webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id}));
+                                    webSocket.send(JSON.stringify({
+                                        "messageType": "SendCommandToBrowserNode",
+                                        "instance_id": instance_id
+                                    }));
 
                                     videoContainerWidth = videoContainer.clientWidth;
 
                                     mainVideoElementWidth = clientViewportWidth;
-                                    mainVideoElementLeft = (videoContainerWidth - mainVideoElementWidth) /2;
+                                    mainVideoElementLeft = (videoContainerWidth - mainVideoElementWidth) / 2;
 
                                     let drag = false;
 
@@ -566,14 +585,32 @@
                                     mainVideoElementID.addEventListener('mousemove', (event) => {
                                         //mainVideoElementID.style.cursor = 'none';
 
-                                        if(event.buttons != 0){
+                                        if (event.buttons != 0) {
                                             drag = true;
-                                            console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight,"buttons": event.buttons}));
+                                            console.log(JSON.stringify({
+                                                "messageType": "SendCommandToBrowserNode",
+                                                "instance_id": instance_id,
+                                                "command": "mouseMove",
+                                                "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                                "sourceY": event.pageY,
+                                                "sourceWidth": clientViewportWidth,
+                                                "sourceHeight": clientViewportHeight,
+                                                "buttons": event.buttons
+                                            }));
                                             //webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseDragMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
 
                                         }
                                         //else{
-                                            webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMove", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight, "buttons": event.buttons}));
+                                        webSocket.send(JSON.stringify({
+                                            "messageType": "SendCommandToBrowserNode",
+                                            "instance_id": instance_id,
+                                            "command": "mouseMove",
+                                            "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                            "sourceY": event.pageY,
+                                            "sourceWidth": clientViewportWidth,
+                                            "sourceHeight": clientViewportHeight,
+                                            "buttons": event.buttons
+                                        }));
                                         //}
                                     });
 
@@ -582,15 +619,31 @@
                                         return false;
                                     }, false);
 
-                                    mainVideoElementID.addEventListener("dblclick", function(event){
-                                        webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseDoubleClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                    mainVideoElementID.addEventListener("dblclick", function(event) {
+                                        webSocket.send(JSON.stringify({
+                                            "messageType": "SendCommandToBrowserNode",
+                                            "instance_id": instance_id,
+                                            "command": "mouseDoubleClick",
+                                            "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                            "sourceY": event.pageY,
+                                            "sourceWidth": clientViewportWidth,
+                                            "sourceHeight": clientViewportHeight
+                                        }));
                                     });
 
                                     mainVideoElementID.addEventListener("wheel", onWheelScrollEventFunction);
 
                                     function onWheelScrollEventFunction(event) {
-                                      console.log('**** Mouse scroll event cartured' + JSON.stringify(event));
-                                      webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "scrollMouse", "scrollX": -(event.deltaX), "scrollY": -(event.deltaY) , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                        console.log('**** Mouse scroll event cartured' + JSON.stringify(event));
+                                        webSocket.send(JSON.stringify({
+                                            "messageType": "SendCommandToBrowserNode",
+                                            "instance_id": instance_id,
+                                            "command": "scrollMouse",
+                                            "scrollX": -(event.deltaX),
+                                            "scrollY": -(event.deltaY),
+                                            "sourceWidth": clientViewportWidth,
+                                            "sourceHeight": clientViewportHeight
+                                        }));
                                     }
 
                                     //document.addEventListener('mouseup', () => console.log(drag ? 'drag' : 'click'));
@@ -599,22 +652,54 @@
                                     });*/
 
                                     mainVideoElementID.addEventListener('mouseup', (event) => {
-                                        if(drag){
+                                        if (drag) {
                                             drag = false;
                                             return false;
                                         }
                                         switch (event.button) {
                                             case 0:
-                                                console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseLeftClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                console.log(JSON.stringify({
+                                                    "messageType": "SendCommandToBrowserNode",
+                                                    "instance_id": instance_id,
+                                                    "command": "mouseLeftClick",
+                                                    "sourceX": event.pageX,
+                                                    "sourceY": event.pageY,
+                                                    "sourceWidth": clientViewportWidth,
+                                                    "sourceHeight": clientViewportHeight
+                                                }));
+                                                webSocket.send(JSON.stringify({
+                                                    "messageType": "SendCommandToBrowserNode",
+                                                    "instance_id": instance_id,
+                                                    "command": "mouseLeftClick",
+                                                    "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                                    "sourceY": event.pageY,
+                                                    "sourceWidth": clientViewportWidth,
+                                                    "sourceHeight": clientViewportHeight
+                                                }));
                                                 break;
                                             case 1:
                                                 //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseMiddleClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                webSocket.send(JSON.stringify({
+                                                    "messageType": "SendCommandToBrowserNode",
+                                                    "instance_id": instance_id,
+                                                    "command": "mouseMiddleClick",
+                                                    "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                                    "sourceY": event.pageY,
+                                                    "sourceWidth": clientViewportWidth,
+                                                    "sourceHeight": clientViewportHeight
+                                                }));
                                                 break;
                                             case 2:
                                                 //console.log(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX, "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
-                                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "mouseRightClick", "sourceX": event.pageX - (mainVideoElementLeft - 1), "sourceY": event.pageY , "sourceWidth": clientViewportWidth, "sourceHeight": clientViewportHeight}));
+                                                webSocket.send(JSON.stringify({
+                                                    "messageType": "SendCommandToBrowserNode",
+                                                    "instance_id": instance_id,
+                                                    "command": "mouseRightClick",
+                                                    "sourceX": event.pageX - (mainVideoElementLeft - 1),
+                                                    "sourceY": event.pageY,
+                                                    "sourceWidth": clientViewportWidth,
+                                                    "sourceHeight": clientViewportHeight
+                                                }));
                                                 break;
                                             default:
                                                 break;
@@ -622,55 +707,76 @@
                                     });
 
                                     document.addEventListener("keydown", function(event) {
-                                      console.log(event);
-                                      /*if(event.keyCode == 91){
-                                         // event.preventDefault(); //Won't work
-                                         console.log("Win Key was clicked");
-                                         event.preventDefault();
-                                         event.stopPropagation();
-                                         return false;
-                                      }*/
+                                        console.log(event);
+                                        /*if(event.keyCode == 91){
+                                           // event.preventDefault(); //Won't work
+                                           console.log("Win Key was clicked");
+                                           event.preventDefault();
+                                           event.stopPropagation();
+                                           return false;
+                                        }*/
 
-                                      var sendModifier = [];
-                                      if(event.altKey){
-                                        sendModifier.push("alt");
-                                      }
-
-                                      if(event.ctrlKey){
-                                        sendModifier.push("command");
-                                        if(event.key == "v"){
-                                            /*var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "typeText", "text" : e.data.message.clipboardData});
-                                            
-                                            console.log(msg);
-                                            webSocket.send(msg);*/
-                                            console.log("*****************welcome******************************");
-                                            //console.log('event data' + event.clipboardData.getData('Text'));
-                                            if(document.referrer !== "" && document.referrer !== undefined){
-                                                var url = new URL( document.referrer );
-                                            }
-                                            else{
-                                                var url = new URL(window.location.href);
-                                            }
-                                            var target = url.protocol+"//"+url.host;
-                                            window.parent.postMessage({"action":"clipboard_data", "message":'read'}, target);
-                                            return;
+                                        var sendModifier = [];
+                                        if (event.altKey) {
+                                            sendModifier.push("alt");
                                         }
-                                      }
 
-                                      if(event.shiftKey){
-                                        sendModifier.push("shift");
-                                      }
+                                        if (event.ctrlKey) {
+                                            sendModifier.push("command");
+                                            if (event.key == "v") {
+debugger;
+                                                navigator.clipboard.readText().then(text => {
+                                                    var msg = JSON.stringify({
+                                                        "messageType": "SendCommandToBrowserNode",
+                                                        "instance_id": instance_id,
+                                                        "command": "typeText",
+                                                        "text": e.data.message.clipboardData
+                                                    });
 
-                                      if(event.metaKey){
-                                        sendModifier.push("meta");
-                                      }
+                                                    console.log(msg);
+                                                    webSocket.send(msg);
 
-                                      var eventKey = event.key.toLowerCase();
-                                      
-                                      var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "keyEvent", "key": eventKey, "keyState": "down" , "modifier" : sendModifier});
-                                      
-                                      console.log(msg);
-                                      webSocket.send(msg);
+                                                }).catch(err => {
+                                                    console.error('Failed to read clipboard contents: ', err);
+                                                });
+
+                                                /*    console.log("*****************welcome******************************");
+                                                    //console.log('event data' + event.clipboardData.getData('Text'));
+                                                    if (document.referrer !== "" && document.referrer !== undefined) {
+                                                        var url = new URL(document.referrer);
+                                                    } else {
+                                                        var url = new URL(window.location.href);
+                                                    }
+                                                    var target = url.protocol + "//" + url.host;
+                                                    window.parent.postMessage({
+                                                        "action": "clipboard_data",
+                                                        "message": 'read'
+                                                    }, target);
+                                                    return;*/
+                                            }
+                                        }
+
+                                        if (event.shiftKey) {
+                                            sendModifier.push("shift");
+                                        }
+
+                                        if (event.metaKey) {
+                                            sendModifier.push("meta");
+                                        }
+
+                                        var eventKey = event.key.toLowerCase();
+
+                                        var msg = JSON.stringify({
+                                            "messageType": "SendCommandToBrowserNode",
+                                            "instance_id": instance_id,
+                                            "command": "keyEvent",
+                                            "key": eventKey,
+                                            "keyState": "down",
+                                            "modifier": sendModifier
+                                        });
+
+                                        console.log(msg);
+                                        webSocket.send(msg);
                                     });
 
                                     /*document.addEventListener("keyup", function(event) {
@@ -685,25 +791,24 @@
                                     });*/
                                 }
 
-                                webSocket.onmessage = function (evt) { 
+                                webSocket.onmessage = function(evt) {
                                     var received_msg = evt.data;
                                     console.log("Message is received...");
                                 };
-                            
-                                webSocket.onclose = function() { 
-                                 
+
+                                webSocket.onclose = function() {
+
                                     // websocket is closed.
-                                    console.log("Connection is closed..."); 
+                                    console.log("Connection is closed...");
                                 };
                             } else {
-                             
+
                                 // The browser doesn't support WebSocket
                                 console.log("WebSocket NOT supported by your Browser!");
                             }
 
-                        }, false );
-                    }
-                    else if(e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "send_clipboard_data"){
+                        }, false);
+                    } else if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "send_clipboard_data") {
                         if ("WebSocket" in window) {
                             var relay_server_url = e.data.message.main_relay_server_url;
                             //var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
@@ -711,22 +816,26 @@
 
                             webSocket.onopen = function() {
                                 console.log("Message is sent..." + e.data.message.clipboardData);
-                                webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "typeText", "text" : e.data.message.clipboardData}));
+                                webSocket.send(JSON.stringify({
+                                    "messageType": "SendCommandToBrowserNode",
+                                    "instance_id": instance_id,
+                                    "command": "typeText",
+                                    "text": e.data.message.clipboardData
+                                }));
                             };
 
-                            webSocket.onmessage = function (evt) { 
+                            webSocket.onmessage = function(evt) {
                                 var received_msg = evt.data;
                                 console.log("Message is received...");
                             };
-                            
-                            webSocket.onclose = function() { 
-                             
+
+                            webSocket.onclose = function() {
+
                                 // websocket is closed.
-                                console.log("Connection is closed for clipboard..."); 
+                                console.log("Connection is closed for clipboard...");
                             };
                         }
-                    }
-                    else{
+                    } else {
                         console.log(JSON.stringify(e));
                     }
                 });
