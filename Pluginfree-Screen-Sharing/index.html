@@ -808,7 +808,7 @@
                             }
 
                         }, false);
-                    } else if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "sendClipboardDataToBrowserNode") {
+                    } else if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "sendClipboardDataToBrowserNodeActual") {
                         if ("WebSocket" in window) {
                             var relay_server_url = e.data.message.main_relay_server_url;
                             //var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
