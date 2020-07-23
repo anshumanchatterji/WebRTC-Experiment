@@ -817,7 +817,7 @@
                             webSocket.onopen = function() {
                                 var msg = {
                                     "messageType": "SendCommandToBrowserNode",
-                                    "instance_id": e.data.instance_id,
+                                    "instance_id": e.data.message.instance_id,
                                     "command": "typeText",
                                     "text": e.data.message.clipboardData
                                 };
