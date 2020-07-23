@@ -724,8 +724,8 @@
                                         if (event.ctrlKey) {
                                             sendModifier.push("command");
                                             if (event.key == "v") {
-debugger;
-                                                navigator.clipboard.readText().then(text => {
+                                                // cannot read Clipboard inside iframe yet
+                                                /*navigator.clipboard.readText().then(text => {
                                                     var msg = JSON.stringify({
                                                         "messageType": "SendCommandToBrowserNode",
                                                         "instance_id": instance_id,
@@ -738,21 +738,21 @@ debugger;
 
                                                 }).catch(err => {
                                                     console.error('Failed to read clipboard contents: ', err);
-                                                });
+                                                });*/
 
-                                                /*    console.log("*****************welcome******************************");
-                                                    //console.log('event data' + event.clipboardData.getData('Text'));
-                                                    if (document.referrer !== "" && document.referrer !== undefined) {
-                                                        var url = new URL(document.referrer);
-                                                    } else {
-                                                        var url = new URL(window.location.href);
-                                                    }
-                                                    var target = url.protocol + "//" + url.host;
-                                                    window.parent.postMessage({
-                                                        "action": "clipboard_data",
-                                                        "message": 'read'
-                                                    }, target);
-                                                    return;*/
+                                               //console.log('event data' + event.clipboardData.getData('Text'));
+                                                if (document.referrer !== "" && document.referrer !== undefined) {
+                                                    var url = new URL(document.referrer);
+                                                } else {
+                                                    var url = new URL(window.location.href);
+                                                }
+                                                var target = url.protocol + "//" + url.host;
+                                                window.parent.postMessage({
+                                                    "action": "sendClipboardDataToBrowserNode",
+                                                    "message": 'read',
+                                                    "instance_id": instance_id
+                                                }, target);
+                                                return;
                                             }
                                         }
 
@@ -808,20 +808,21 @@ debugger;
                             }
 
                         }, false);
-                    } else if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "send_clipboard_data") {
+                    } else if (e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "sendClipboardDataToBrowserNode") {
                         if ("WebSocket" in window) {
                             var relay_server_url = e.data.message.main_relay_server_url;
                             //var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
                             var webSocket = new WebSocket(relay_server_url + '/browserCloud/ws/', "echo-protocol");
 
                             webSocket.onopen = function() {
-                                console.log("Message is sent..." + e.data.message.clipboardData);
-                                webSocket.send(JSON.stringify({
+                                var msg = {
                                     "messageType": "SendCommandToBrowserNode",
-                                    "instance_id": instance_id,
+                                    "instance_id": e.data.instance_id,
                                     "command": "typeText",
                                     "text": e.data.message.clipboardData
-                                }));
+                                };
+                                console.log(msg);
+                                webSocket.send(JSON.stringify(msg));
                             };
 
                             webSocket.onmessage = function(evt) {
