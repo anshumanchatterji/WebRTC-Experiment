@@ -519,6 +519,8 @@
                         var instance_id = e.data.message.instance_id;
                         clientViewportWidth = e.data.message.viewportWidth;
                         clientViewportHeight = e.data.message.viewportHeight;
+                        
+                        var relay_server_url = e.data.message.main_relay_server_url;
 
                         videoContainer.style.width = clientViewportWidth + "px";
                         videoContainer.style.height = clientViewportHeight + "px";
@@ -545,7 +547,8 @@
                                 }*/
 
                                 // var webSocket = new WebSocket('wss://dev-browsercloud.pcloudy.com/browserCloud/ws/', "echo-protocol");
-                                var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
+                                //var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
+                                var webSocket = new WebSocket(relay_server_url + '/browserCloud/ws/', "echo-protocol");
 
                                 webSocket.onopen = function() {
                                     webSocketClientCounter++;
@@ -635,6 +638,23 @@
 
                                       if(event.ctrlKey){
                                         sendModifier.push("command");
+                                        if(event.key == "v"){
+                                            /*var msg = JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "typeText", "text" : e.data.message.clipboardData});
+                                            
+                                            console.log(msg);
+                                            webSocket.send(msg);*/
+                                            console.log("*****************welcome******************************");
+                                            //console.log('event data' + event.clipboardData.getData('Text'));
+                                            if(document.referrer !== "" && document.referrer !== undefined){
+                                                var url = new URL( document.referrer );
+                                            }
+                                            else{
+                                                var url = new URL(window.location.href);
+                                            }
+                                            var target = url.protocol+"//"+url.host;
+                                            window.parent.postMessage({"action":"clipboard_data", "message":'read'}, target);
+                                            return;
+                                        }
                                       }
 
                                       if(event.shiftKey){
@@ -683,11 +703,14 @@
 
                         }, false );
                     }
-                    /*else if(e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "send_clipboard_data"){
+                    else if(e.data !== undefined && e.data.hasOwnProperty('action') && e.data.action != null && e.data.action == "send_clipboard_data"){
                         if ("WebSocket" in window) {
-                            var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
+                            var relay_server_url = e.data.message.main_relay_server_url;
+                            //var webSocket = new WebSocket('wss://' + window.location.host + '/browserCloud/ws/', "echo-protocol");
+                            var webSocket = new WebSocket(relay_server_url + '/browserCloud/ws/', "echo-protocol");
 
                             webSocket.onopen = function() {
+                                console.log("Message is sent..." + e.data.message.clipboardData);
                                 webSocket.send(JSON.stringify({"messageType" : "SendCommandToBrowserNode", "instance_id" : instance_id, "command" : "typeText", "text" : e.data.message.clipboardData}));
                             };
 
@@ -702,7 +725,7 @@
                                 console.log("Connection is closed for clipboard..."); 
                             };
                         }
-                    }*/
+                    }
                     else{
                         console.log(JSON.stringify(e));
                     }
