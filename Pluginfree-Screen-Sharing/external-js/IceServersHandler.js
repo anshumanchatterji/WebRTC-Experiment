@@ -30,7 +30,15 @@ var IceServersHandler = (function() {
             username: 'webrtc'
         }];
 
-        return iceServers2;
+        var iceServers4 = [{
+            urls: ["stun:bn-turn1.xirsys.com"]
+        }, {
+            username: "yxO8MTLbvLGojix48-s8tK7Ft3X50fV4xHstNIO_sysjmGxSAlGYnoeKC2vaEA87AAAAAF9QdLphbnNodW1hbmNoYXR0ZXJqZWU=",
+            credential: "2e9d6748-eda0-11ea-8c2b-0242ac140004",
+            urls: ["turn:bn-turn1.xirsys.com:80?transport=udp", "turn:bn-turn1.xirsys.com:3478?transport=udp", "turn:bn-turn1.xirsys.com:80?transport=tcp", "turn:bn-turn1.xirsys.com:3478?transport=tcp", "turns:bn-turn1.xirsys.com:443?transport=tcp", "turns:bn-turn1.xirsys.com:5349?transport=tcp"]
+        }];
+
+        return iceServers4;
     }
 
     return {

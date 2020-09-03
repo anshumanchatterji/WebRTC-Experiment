@@ -287,7 +287,7 @@ function findGetParameter(parameterName) {
 }
 
 function showErrorMessage(error, color) {
-    //
+    console.error(error);
 }
 
 function getDisplayMediaError(error) {
